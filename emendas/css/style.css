@@ -1,0 +1,266 @@
+@import url(http://fonts.googleapis.com/css?family=PT+Serif|PT+Serif:b|PT+Serif:i|PT+Sans|PT+Sans:b);
+html, .container {
+  min-width: 1040px;
+}
+
+body {
+  background: #fcfcfa;
+  color: #333;
+  font-family: "PT Serif", serif;
+  margin: 0;
+  position: relative;
+  /* width: 960px; */
+}
+
+header,
+footer,
+h1,
+h2,
+h3,
+h4,
+aside {
+  color: #000;
+  font-family: "PT Sans", sans-serif;
+}
+
+h1 {
+  font-size: 64px;
+  font-weight: 300;
+  letter-spacing: -2px;
+  margin: .3em 0 .1em 0;
+}
+
+h2 {
+  margin-top: 2em;
+}
+
+h1, h2 {
+  text-rendering: optimizeLegibility;
+}
+
+h2 a {
+  color: #ccc;
+  left: -20px;
+  position: absolute;
+  width: 740px;
+}
+
+footer {
+  font-size: small;
+  margin-top: 8em;
+}
+
+header aside {
+  margin-top: 88px;
+}
+
+header aside,
+footer aside {
+  color: #636363;
+  text-align: right;
+}
+
+aside {
+  font-size: small;
+  right: 0;
+  position: absolute;
+  width: 180px;
+}
+
+.attribution {
+  font-size: small;
+  margin-bottom: 2em;
+}
+
+body > p, li > p {
+  line-height: 1.5em;
+}
+
+body > p {
+  /* width: 720px; */
+}
+
+body > blockquote {
+  width: 640px;
+}
+
+blockquote q {
+  display: block;
+  font-style: oblique;
+}
+
+li {
+  width: 680px;
+}
+
+a {
+  color: steelblue;
+}
+
+a:not(:hover) {
+  text-decoration: none;
+}
+
+pre, code, textarea {
+  font-family: "Menlo", monospace;
+}
+
+code {
+  line-height: 1em;
+}
+
+textarea {
+  font-size: 100%;
+}
+
+body > pre {
+  border-left: solid 2px #ccc;
+  padding-left: 18px;
+  margin: 2em 0 2em -20px;
+}
+
+.html .value,
+.javascript .string,
+.javascript .regexp {
+  color: #756bb1;
+}
+
+.html .tag,
+.css .tag,
+.javascript .keyword {
+  color: #3182bd;
+}
+
+.comment {
+  color: #636363;
+}
+
+.html .doctype,
+.javascript .number {
+  color: #31a354;
+}
+
+.html .attribute,
+.css .attribute,
+.javascript .class,
+.javascript .special {
+  color: #e6550d;
+}
+
+svg {
+  font: 10px sans-serif;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+sup, sub {
+  line-height: 0;
+}
+
+q:before {
+  content: "“";
+}
+
+q:after {
+  content: "”";
+}
+
+blockquote:before {
+  position: absolute;
+  left: 2em;
+}
+
+blockquote:after {
+  position: absolute;
+}
+
+#chartDiv, #chart {
+  width: 980px;
+  height: 600px;
+}
+
+#chartDiv, .legenda {
+    position: relative;
+    float: left;
+}
+
+p#chart {
+  margin: 0;
+}
+
+.par, .impar {
+    padding-left: 2px;
+    padding-right: 2px;
+    font-size: 13px;
+}
+
+h3.dadosHeader,
+h4.dadosHeader {
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.origemHeader {
+    background-color: #595926; /* EDADOS: C1 */
+    border: 1px;
+    border-color: #594026; /* EDADOS: C2 */
+    color: #ddd;
+    padding: 3px;
+    font-size: 14px;
+}
+
+.destinoHeader {
+    background-color: #265959; /* EDADOS: C9 */
+    border: 1px;
+    border-color: #265940; /* EDADOS: C10 */
+    color: #ddd;
+    padding: 3px;
+    font-size: 14px;
+}
+
+.origem.par {
+    background-color: #B8B88F; /* EDADOS: A1 */
+}
+.origem.impar {
+    background-color: #B8A38F; /* EDADOS: A2 */
+}
+
+.destino.par {
+    background-color: #8FB8B8; /* EDADOS: A9 */
+}
+
+.destino.impar {
+    background-color: #8FB8A3; /* EDADOS: A10 */
+}
+
+.node rect {
+  cursor: move;
+  fill-opacity: .9;
+  shape-rendering: crispEdges;
+}
+
+.node text {
+    pointer-events: none;
+    color: #fff;
+    /*text-shadow: 0 1px 0 #fff;*/
+}
+
+.link {
+  fill: none;
+  stroke: #333;
+  stroke-opacity: .2;
+}
+
+.link:hover {
+  stroke-opacity: .5;
+}
+
+.destaquePartido {
+    stroke-opacity: .6
+}
+
+
