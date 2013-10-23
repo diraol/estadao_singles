@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt_BR">
+    <head>
+        <meta charset="utf-8">
+        <title>Fluxo das Emendas</title>
+        <link type="text/css" href="css/style.css" rel="stylesheet" /> 
+        <script src="js/edados_color.js"></script>
+        <link type="text/css" href="css/edados_color.css" rel="stylesheet" /> 
+    </head>
+    <body>
+        <div class="container">
+            <div id="chartDiv">
+                <p id="chart"></p>
+            </div>
+          </div>
+        <script src="js/jquery.min.js"></scritp>  
+        <script>
+            if(!window.jQuery && !window.$){
+              var script = document.createElement('script');
+              script.type = "text/javascript";
+              script.src = "http://code.jquery.com/jquery-1.10.1.min.js";
+              document.getElementsByTagName('head')[0].appendChild(script);
+            }
+            if (!window.jQuery){
+                window.jQuery = window.$;
+            }
+            if(!window.$){
+                window.$ = window.jQuery;
+            }
+        </script>
+        <script src="js/d3.min.js"></script>
+        <script src="js/sankey.js"></script>
+        <script src="js/moneyPath.js"></script>
+    </body>
+</html>
