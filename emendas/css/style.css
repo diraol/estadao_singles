@@ -9,7 +9,7 @@ body {
   font-family: "PT Serif", serif;
   margin: 0;
   position: relative;
-  /* width: 960px; */
+  width: 100%;/* width: 960px; */
 }
 
 header,
@@ -179,7 +179,7 @@ blockquote:after {
 }
 
 #chartDiv, #chart {
-  width: 980px;
+  width: 100%;/*width: 980px;*/
   height: 600px;
 }
 
@@ -253,6 +253,7 @@ h4.dadosHeader {
   fill: none;
   stroke: #333;
   stroke-opacity: .2;
+  -webkit-transition: all 100ms linear;
 }
 
 .link:hover {

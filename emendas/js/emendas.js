@@ -1,5 +1,6 @@
-var margin = {top: 1, right: 1, bottom: 1, left: 1},
-    width = 960 - margin.left - margin.right,
+var margin = {top: 2, right: 2, bottom: 2, left: 2},
+    largura = $(window).width(),
+    width = largura*0.95 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom,
     paridadeOrigem = false,
     paridadeDestino = true;
@@ -45,27 +46,31 @@ var svg = d3.select("#chart").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var sankey = d3.sankey()
-    .nodeWidth(110)
+    .nodeWidth(170)
     .nodePadding(10)
     .size([width, height]);
 
 var path = sankey.link();
 
 d3.json("dados/emendas.json", function(emendas) {
+    for (var i in emendas.links) {
+        // multiplicar os dy's por 1.1 (+10%)
+    }
 
   sankey
       .nodes(emendas.nodes)
       .links(emendas.links)
       .layout(0);
 
+    console.log(emendas.links)
+
   var link = svg.append("g").selectAll(".link")
       .data(emendas.links)
     .enter().append("path")
       .attr("class", "link")
-      .attr("data-links", function(d) { return formatName(d.source.name) + " " + formatName(d.target.name); })
-      .attr("data-source", function(d) { return formatName(d.source.name); })
-      .attr("data-target", function(d) { return formatName(d.target.name); })
+      .attr("data-linkings", function(d) { return formatName(d.source.name) + " " + formatName(d.target.name); })
       .attr("d", path)
+      .attr("data-index", function(d, index) { console.log(d.source.name, d.target.name, d.dy); return ""; })
       .style("stroke-width", function(d) { return Math.max(1, d.dy); })
       .sort(function(a, b) {
             return b.dy - a.dy;
@@ -79,24 +84,60 @@ d3.json("dados/emendas.json", function(emendas) {
     .enter().append("g")
       .attr("class", "node")
       .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+      .attr("data-links", function(d) {
+          var links = "";
+          try {
+            for (var idx in d.targetLinks) {
+              links += formatName(d.targetLinks[idx].source.name);
+              links += " ";
+            }
+          } catch(err){}
+          try {
+            for (var idx in d.sourceLinks) {
+              links += formatName(d.sourceLinks[idx].target.name);
+              links += " ";
+            }
+          }catch(err){}
+          return $.trim(links);
+      })
       .on("mouseover", adiciona_destaque_partido)
-      .on("mouseout", remove_destaque_partido)
-    .call(d3.behavior.drag()
-      .origin(function(d) { return d; })
-      .on("dragstart", function() { this.parentNode.appendChild(this); })
-      .on("drag", dragmove));
+      .on("click", adiciona_destaque_partido)
+      .on("mouseout", remove_destaque_partido);
 
   node.append("rect")
       .attr("height", function(d) { return d.dy; })
       .attr("width", sankey.nodeWidth())
+      .attr("id", function(d) { return formatName(d.name) + "-box"; })
+      .attr("data-from", function(d) {
+          var origens = "";
+          try {
+            for (var idx in d.targetLinks) {
+              origens += formatName(d.targetLinks[idx].source.name);
+              origens += " ";
+            }
+          }catch(err){}
+          return $.trim(origens);
+        })
+      .attr("data-to", function(d) {
+          var destinos = "";
+          try {
+            for (var idx in d.sourceLinks) {
+              destinos += formatName(d.sourceLinks[idx].target.name);
+              destinos += " ";
+            }
+          }catch(err){}
+          return $.trim(destinos);
+        })
       .style("fill", function(d) { return d.color = color[d.name]; })
       .style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
+      .style("data-color", function(d) { return d.color = color[d.name]; })
+      .style("data-highlighted", 0)
     .append("title")
       .text(function(d) { return d.name + "\n" + format(d.value); });
 
   node.append("text")
       .attr("x", sankey.nodeWidth()/2)
-      .attr("y", function(d) { return d.dy / 2; })
+      .attr("y", function(d) { return (d.dy / 2) - 6; })
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
       .attr("transform", null)
@@ -104,12 +145,14 @@ d3.json("dados/emendas.json", function(emendas) {
   
   node.append("text")
       .attr("x", sankey.nodeWidth()/2)
-      .attr("y", function(d) { return (d.dy / 2) + 4; })
+      .attr("y", function(d) { return (d.dy / 2) + 6; })
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
       .attr("transform", null)
-      .attr("data-type", "valor");
-  
+      .attr("id", function(d) { return formatName(d.name)+"-valor";})
+      .attr("data-type", "valor")
+      .text(function(d) { return format(d.value); });
+
   function dragmove(d) {
     d3.select(this).attr("transform", "translate(" + d.x + "," + (d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))) + ")");
     sankey.relayout();
@@ -117,55 +160,34 @@ d3.json("dados/emendas.json", function(emendas) {
   }
 
   function adiciona_destaque_partido(d) {
-    $('.origens').empty();
-    $('.destinos').empty();
-    $('h3.dadosHeader').text(d.name);
-    $('h4.dadosHeader').text("Total: " + format(d.value));
-    $("[data-links~='"+formatName(d.name)+"']").attr("class","link destaquePartido");
-    $("[data-target~='"+formatName(d.name)+"']").each(function(index) { addOrigem(d, index); } );
-    $("[data-source~='"+formatName(d.name)+"']").each(function(index) { addDestino(d, index); } );
+    console.log(formatName(d.name));
+    var cor_partido_selecionado = $('#'+formatName(d.name)+'-box')[0].style.stroke;
+    $("[data-linkings~='"+formatName(d.name)+"']").attr("class","link destaquePartido");
+    $("[data-to~='"+formatName(d.name)+"']").each(function(index) { destColor(d, index); } );
+    //$("[data-from~='"+formatName(d.name)+"']").each(function(index) { addDestino(d, index); } );
+    //$("[data-links*='"+formatName(d.name)+"']").each(function(index){console.log(this)});
+    $(".node").each(function(){this.style.opacity = 0.6;});
+    $("[id='"+formatName(d.name)+"-box']").parent().each(function(){ this.style.opacity = 1; });
+    $("[data-links*='"+formatName(d.name)+"']").each(function(){ this.style.opacity = 1; });
   }
 
   function remove_destaque_partido(d) {
-    $("[data-links*='"+formatName(d.name)+"']").attr("class","link");
+    $("[data-linkings*='"+formatName(d.name)+"']").attr("class","link");
+    $(".node").each(function(){this.style.opacity = 1;});
+    //$("[data-highlighted=1]").style("stroke-opacity","1");
+    //$("[data-highlighted=1]").attr("data-highlighted",0);
   }
 
-  function addOrigem(d, index) {
-    var paridade = false;
-    if (paridadeOrigem) {
-        var paridade = "impar";
-        paridadeOrigem = false;
-    } else {
-        var paridade = "par";
-        paridadeOrigem = true;
-    }
-    var conteudo = d.targetLinks[index].source.name + " → " + format(d.targetLinks[index].value);
-    $("<div>", {
-            "class": "origem " + paridade,
-            title: conteudo,
-            alt: conteudo,
-            html: conteudo
-    }).appendTo('.origens');
+  function destColor(d, index) {
+    //console.log("[data-from='"+formatName(d.name)+"']");
+    //console.log($("[data-from='"+formatName(d.name)+"']"));
   }
 
   function addDestino(d, index) {
-    var paridade = false;
-    if (paridadeDestino) {
-        var paridade = "impar";
-        paridadeDestino = false;
-    } else {
-        var paridade = "par";
-        paridadeDestino = true;
-    }
-    var conteudo = d.sourceLinks[index].target.name + " → " + format(d.sourceLinks[index].value);
-    $("<div>", {
-            class: "destino " + paridade,
-            title: conteudo,
-            alt: conteudo,
-            html: conteudo
-    }).appendTo('.destinos');
+    //console.log($("[data-to='"+formatName(d.name)+"']"));
   }
 
 });
+
 
 
